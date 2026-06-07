@@ -8,6 +8,7 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     [SerializeField] private CharacterController _cc;
+    // Values
     [SerializeField] private float _mSpd;
 
     private void Start()
@@ -25,6 +26,7 @@ public class Movement : MonoBehaviour
 
     public void Move(Vector3 move)
     {
+        move.y -= 9.81f * Time.deltaTime * 50; // for gravity, if I ever implement vertical movement.
         _cc.Move(move * _mSpd * Time.deltaTime);
     }
 }
