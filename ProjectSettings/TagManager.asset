@@ -8,6 +8,8 @@ TagManager:
   - Body
   - Floor
   - Wall
+  - Enemy
+  - Trap
   layers:
   - Default
   - TransparentFX
@@ -20,8 +22,8 @@ TagManager:
   - Body
   - Map
   - Trap
-  - 
-  - 
+  - Shape
+  - Puzzle
   - 
   - 
   - 

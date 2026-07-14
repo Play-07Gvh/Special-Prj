@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// No hitbox
 public class SpikeIdle : State
 {
     private GameObject m_go;
@@ -31,6 +32,7 @@ public class SpikeIdle : State
     }
 }
 
+// Able to hit player
 public class SpikeActive : State
 {
     private GameObject m_go;
@@ -77,21 +79,25 @@ public class SpikeActive : State
 
 }
 
+// No more active state
 public class SpikeDeactivated : State
 {
     private GameObject m_go;
     private HealthSystem _health;
     private StateMachine _sm;
+    private UIManager UIMan;
     public SpikeDeactivated(string stateID, GameObject go, StateMachine sm) : base(stateID)
     {
         m_go = go;
         _health = m_go.GetComponent<HealthSystem>();
         _sm = sm;
+        UIMan = GameObject.FindFirstObjectByType<UIManager>();
     }
 
     public override void Enter()
     {
         m_go.GetComponent<BoxCollider>().enabled = false;
+        UIMan.SetSubtitleText("You have disarmed a Spike Trap");
     }
 
     public override void Update(double dt)

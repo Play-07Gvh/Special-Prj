@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b69b52eed9d4bfe4dae3945099ed9b58, type: 3}
   m_Name: Body
   m_EditorClassIdentifier: Assembly-CSharp::ControlSchema
-  forward: 273
-  backward: 274
-  left: 276
-  right: 275
+  forward: 119
+  backward: 115
+  left: 97
+  right: 100
+  turnL: 106
+  turnR: 108
+  Attack: 107
