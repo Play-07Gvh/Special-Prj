@@ -15,4 +15,5 @@ public class ControlSchema : ScriptableObject
     public KeyCode turnR;
 
     public KeyCode Attack;
+    public KeyCode Interact;
 }

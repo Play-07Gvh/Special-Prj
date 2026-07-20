@@ -32,10 +32,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private RawImage img_swarn;
     [SerializeField] private RawImage img_wwarn;
 
-    //[SerializeField] private GameObject img_nwarn;
-    //[SerializeField] private GameObject img_ewarn;
-    //[SerializeField] private GameObject img_swarn;
-    //[SerializeField] private GameObject img_wwarn;
+    [SerializeField] private GameObject interactTxt;
 
     private void Start()
     {
@@ -48,6 +45,11 @@ public class UIManager : MonoBehaviour
         if (!Body) Debug.LogError("No body!");
         if (!Head) Debug.LogError("No head!");
 
+    }
+
+    public void HideOrShowInteract(bool HoS)
+    {
+        interactTxt.SetActive(HoS);   
     }
 
     public void UpdateHealthText(int hp)

@@ -16,6 +16,7 @@ MonoBehaviour:
   backward: 115
   left: 97
   right: 100
-  turnL: 106
-  turnR: 108
-  Attack: 107
+  turnL: 102
+  turnR: 104
+  Attack: 103
+  Interact: 106

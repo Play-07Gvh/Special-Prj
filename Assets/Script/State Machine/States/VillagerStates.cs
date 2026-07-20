@@ -87,6 +87,7 @@ public class VillagerDeath : State
     {
         Debug.Log("Entering Villager Attack");
         UIMan.SetSubtitleText("Your blade hit a Soft target.");
+        m_go.SetActive(false);
     }
 
     public override void Update(double dt)

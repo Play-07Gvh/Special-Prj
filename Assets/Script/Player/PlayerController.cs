@@ -40,6 +40,8 @@ public class PlayerController : MonoBehaviour
 
     //[SerializeField] private SFXManager SFXMan;
 
+    [SerializeField] private BodyInteraction bodyInteract;
+
     public BodyPart _bp { get; private set; }
 
     [SerializeField] private HealthSystem health;
@@ -128,6 +130,7 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         //if (_bp == BodyPart.Head)
+            InteractAction();
         if (_bp == BodyPart.Head)
         {
             PickupAction();
@@ -165,6 +168,20 @@ public class PlayerController : MonoBehaviour
             interact.Throw();
         }
         isM2Held = Mouse.current.rightButton.isPressed;
+    }
+
+    private void InteractAction()
+    {
+        if (Input.GetKeyUp(_controlSchema.Interact) && _bp == BodyPart.Body)
+        {
+            Debug.Log("Interact button Pressed");
+            bodyInteract.interact();
+        }
+        else if (Input.GetKeyUp(_controlSchema.Interact) && _bp == BodyPart.Head)
+        {
+            Debug.Log("Head Swap cam");
+            interact.changeCam();
+        }
     }
 
     private void FixedUpdate()

@@ -7,6 +7,43 @@ public class Interaction : MonoBehaviour
     private GameObject heldObj;
     [SerializeField] private float throwStr = 10f;
 
+    [SerializeField] private GameObject headCam, mapCam, bodyCam;
+    private bool isMapCam, isBodyCam;
+
+    private void Start()
+    {
+        if (!headCam)
+            headCam = GameObject.Find("Main Camera");
+        if (!headCam)
+            Debug.LogError("Main Camera not found in " + name);
+        if (!mapCam)
+            mapCam = GameObject.Find("Map Camera");
+        if (!mapCam)
+            Debug.LogError("Map Camera not found in " + name);
+        if (!bodyCam)
+            bodyCam = GameObject.Find("BodyCam");
+        if (!bodyCam)
+            Debug.LogError("Body Camera not found in " + name);
+        isMapCam = isBodyCam = false;
+    }
+
+    // Maybe change the logic so that when pressing right control, it grants a state of where the player is in another camera
+    public void changeCam()
+    {
+        if (!isMapCam && !isBodyCam)
+        {
+            
+        }
+        else if (!bodyCam)
+        {
+
+        }
+        else 
+        { 
+        
+        }
+    }
+
     public bool Pickup()
     {
         if (isHolding)

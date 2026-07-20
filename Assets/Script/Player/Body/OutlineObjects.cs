@@ -32,19 +32,19 @@ public class OutlineObjects : MonoBehaviour
     public void RenderOject(GameObject target)
     {
         if (target.layer == 6) return;
-        if (target.tag == "Floor" || target.tag == "Wall")
+        if (target.tag == "Floor" || target.tag == "Wall" || target.tag == "Landmark")
         {
             target.layer = 6;
             //foundObjs.Add(target, seenTimer);
             //objs.Add(target);
         }
         // Uncomment when you done with the SFX finding
-        //SFXMan.PlaySFX("Bump", transform.position);
+        SFXMan.PlaySFX("Bump", transform.position);
     }
 
     public void DisplayWarning(Vector3 target)
     {
-        //UIMan.warningDisplay(warnDirection.Back);
+        // THIS WORKS?
         float rot = transform.localEulerAngles.y;
         transform.LookAt(target);
         float dir = MathF.Abs(rot - MathF.Abs(transform.localEulerAngles.y));

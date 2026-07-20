@@ -12,6 +12,7 @@ public class AttackHB : MonoBehaviour
     private void Start()
     {
         //disableAttack();
+        if (owner == "") owner = name;
     }
 
     public void enableAttack(bool isDur = false)
@@ -44,14 +45,20 @@ public class AttackHB : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Body" && owner != "Body")
+        //if (other.tag == "Body" && owner != "Body")
+        //{
+        //    other.GetComponent<HealthSystem>().takeDamage(dmg, owner);
+        //}
+        //// Body
+        //else if ((other.tag == "Enemy" || other.tag == "Trap") && owner == "Body")
+        //{
+        //    other.GetComponent<HealthSystem>().takeDamage(dmg, owner);
+        //}
+        if (other.gameObject == gameObject)
+            return;
+        if (other.TryGetComponent<HealthSystem>(out HealthSystem tempHealth))
         {
-            other.GetComponent<HealthSystem>().takeDamage(dmg, owner);
-        }
-        // Body
-        else if ((other.tag == "Enemy" || other.tag == "Trap") && owner == "Body")
-        {
-            other.GetComponent<HealthSystem>().takeDamage(dmg, owner);
+            tempHealth.takeDamage(dmg, owner);
         }
     }
 }
