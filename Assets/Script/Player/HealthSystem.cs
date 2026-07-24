@@ -26,9 +26,17 @@ public class HealthSystem : MonoBehaviour
             if (health < 1)
             {
                 UIMan.lose();
+                return;
             }
-            UIMan.SetSubtitleText("You've been hit by " + from);
-            UIMan.UpdateHealthText(health);
+            if (gameObject.tag == "Body")
+            {
+                UIMan.SetSubtitleText("You've been hit by " + from);
+                UIMan.UpdateHealthText(health, false);
+            }
+            else if (gameObject.tag == "Head")
+            {
+                UIMan.UpdateHealthText(health, true);
+            }
         }
     }
 
@@ -37,12 +45,12 @@ public class HealthSystem : MonoBehaviour
         return health;
     }
 
-    public void setHealth(int val)
+    public void setHealth(int val, bool BoH)
     {
         health = val;
         if (!UIMan)
             return;
-        UIMan.UpdateHealthText(health);
+        UIMan.UpdateHealthText(health, BoH);
     }
 
     public void FixedUpdate()

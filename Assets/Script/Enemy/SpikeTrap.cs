@@ -26,7 +26,7 @@ public class SpikeTrap : MonoBehaviour
             Debug.LogError(gameObject.name + "NO HEALTH SYSTEM");
             return;
         }
-        _healthSystem.setHealth(1); // 1 is for active and 0 is for inactive
+        _healthSystem.setHealth(1,false); // 1 is for active and 0 is for inactive
     }
 
     private void Update()

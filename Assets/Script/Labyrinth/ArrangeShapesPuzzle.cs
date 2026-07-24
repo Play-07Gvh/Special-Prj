@@ -1,10 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System.Linq.Expressions;
-using UnityEngine.UIElements;
-using TMPro;
-using UnityEngine.Rendering.Universal;
-using UnityEditor;
 
 public struct PuzzleShape
 {
@@ -133,7 +128,8 @@ public class ArrangeShapesPuzzle : Puzzle
             {
                 //icons[i].transform.position = numbers[i].transform.position;
                 numbers[i].SetActive(false);
-                icons[i].SetActive(false);
+                //icons[i].SetActive(false);
+                icons[i].SetActive(true);
             }
         }
         else
@@ -216,6 +212,7 @@ public class ArrangeShapesPuzzle : Puzzle
         //order = 0;
         //Shuffle();
         // DO SOMETHING. GAME OVER? OR A STRIKE?
+        RespawnShapes();
         Debug.Log("Failure.");
     }
 

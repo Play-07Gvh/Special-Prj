@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem.Android;
 
 // Waiting for player presence
 public class VillagerIdle : State

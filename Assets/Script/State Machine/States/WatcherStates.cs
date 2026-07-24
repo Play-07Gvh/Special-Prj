@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem.Android;
 
 // ...ZZZ...
 public class WatcherSleep : State
@@ -7,17 +6,23 @@ public class WatcherSleep : State
     private GameObject m_go;
     private HealthSystem _healthSystem;
     private StateMachine _sm;
-    private float _sleepTime = 30; // at the start is 30 seconds
+    private UIManager UIMan;
+    private float _sleepTime = 15;
     public WatcherSleep(string stateID, GameObject go, StateMachine sm) : base(stateID)
     {
         m_go = go;
         _healthSystem = m_go.GetComponent<HealthSystem>();
+        UIMan = GameObject.FindFirstObjectByType<UIManager>();
         _sm = sm;
     }
 
     public override void Enter()
     {
+        Debug.Log("Entering Watcher Sleeping");
+        _sleepTime = 2;
         _sleepTime = Random.Range(10, 30);
+        UIMan.WatcherWarningDisplay(-1);
+        m_go.transform.eulerAngles = new Vector3(0, 90, 0);
     }
 
     public override void Update(double dt)
@@ -60,6 +65,9 @@ public class WatcherWaking : State
     {
         _dur = 3;
         // DO UI STUFF HERE
+        Debug.Log("Watcher Waking Up");
+        UIMan.WatcherWarningDisplay(0);
+        m_go.transform.eulerAngles = new Vector3(0, 180, 0);
     }
 
     public override void Update(double dt)
@@ -73,6 +81,7 @@ public class WatcherWaking : State
         {
             _sm.SetNextState("WatcherAwake");
         }
+        _dur -= (float)dt;
     }
 
     public override void Exit()
@@ -98,12 +107,20 @@ public class WatcherAwake : State
 
     public override void Enter()
     {
+        _dur = 2;
         // Enable UI to warn player, maybe also have SFX?
+        UIMan.WatcherWarningDisplay(1);
+        m_go.transform.eulerAngles = new Vector3(0, 270, 0);
+        Debug.Log("Watcher Woke Up");
     }
 
     public override void Update(double dt)
     {
-
+        if (_dur <= 0)
+        {
+            _sm.SetNextState("WatcherSleep");
+        }
+        _dur -= (float)dt;
     }
 
     public override void Exit()
@@ -125,12 +142,14 @@ public class WatcherDead : State
 
     public override void Enter()
     {
+        UIMan.WatcherWarningDisplay(-1);
         m_go.SetActive(false);
+        Debug.Log("Watcher Down!");
     }
 
     public override void Update(double dt)
     {
-
+        Debug.Log("Watcher is dead");
     }
 
     public override void Exit()

@@ -1,7 +1,6 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.Experimental.GraphView.Port;
 
 public enum warnDirection
 {
@@ -34,6 +33,12 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private GameObject interactTxt;
 
+    [SerializeField] private GameObject headCrosshair;
+    [SerializeField] private GameObject bodyCrosshair;
+
+    [SerializeField] private GameObject[] watcherWarningDisplay = new GameObject[2];
+    [SerializeField] private TMP_Text headHPTxt;
+
     private void Start()
     {
         if (!healthText) Debug.LogError("No health text!");
@@ -45,6 +50,8 @@ public class UIManager : MonoBehaviour
         if (!Body) Debug.LogError("No body!");
         if (!Head) Debug.LogError("No head!");
 
+        if (!headCrosshair) Debug.LogWarning("Head Crosshair missing");
+        if (!bodyCrosshair) Debug.LogWarning("Body Crosshair missing");
     }
 
     public void HideOrShowInteract(bool HoS)
@@ -52,9 +59,20 @@ public class UIManager : MonoBehaviour
         interactTxt.SetActive(HoS);   
     }
 
-    public void UpdateHealthText(int hp)
+    public void HideShowCrosshair(bool BoH, bool isShow)
     {
-        healthText.text = "HP: " + hp.ToString();
+        if (!BoH)
+            bodyCrosshair.SetActive(isShow);
+        else
+            headCrosshair.SetActive(isShow);
+    }
+
+    public void UpdateHealthText(int hp, bool BoH)
+    {
+        if (!BoH)
+            healthText.text = "HP: " + hp;
+        else
+            headHPTxt.text = "HP: " + hp;
     }
 
     public void SetSubtitleText(string text)
@@ -118,22 +136,31 @@ public class UIManager : MonoBehaviour
         }
     }
 
+
+    public void WatcherWarningDisplay(int warningState)
+    {
+       switch(warningState)
+        {
+            case -1: // when sleeping
+                watcherWarningDisplay[0].SetActive(false);
+                watcherWarningDisplay[1].SetActive(false);
+                break;
+            case 0: // when waking up
+                watcherWarningDisplay[0].SetActive(true);
+                break;
+            case 1: // when awake
+                watcherWarningDisplay[0].SetActive(false);
+                watcherWarningDisplay[1].SetActive(true);
+                break;
+        }
+    }
+
     public void warningRemove()
     {
-        //img_nwarn.SetActive(false);
-        //img_ewarn.SetActive(false);
-        //img_swarn.SetActive(false);
-        //img_wwarn.SetActive(false);
-
         img_nwarn.canvasRenderer.SetAlpha(0);
         img_ewarn.canvasRenderer.SetAlpha(0);
         img_swarn.canvasRenderer.SetAlpha(0);
         img_wwarn.canvasRenderer.SetAlpha(0);
-
-        //img_nwarn.GetComponent<RawImage>().canvasRenderer.SetAlpha(0);
-        //img_ewarn.GetComponent<RawImage>().canvasRenderer.SetAlpha(0);
-        //img_swarn.GetComponent<RawImage>().canvasRenderer.SetAlpha(0);
-        //img_wwarn.GetComponent<RawImage>().canvasRenderer.SetAlpha(0);
     }
 
     private void FixedUpdate()

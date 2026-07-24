@@ -18,3 +18,5 @@ MonoBehaviour:
   right: 275
   turnL: 0
   turnR: 0
+  Attack: 0
+  Interact: 305

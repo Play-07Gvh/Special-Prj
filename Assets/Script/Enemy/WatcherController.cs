@@ -3,10 +3,6 @@ using UnityEngine.AI;
 
 public class WatcherController : MonoBehaviour
 {
-    public GameObject target;
-    private NavMeshAgent agent;
-    [SerializeField] private BoxCollider atkHB;
-
     [SerializeField] private HealthSystem _health;
     private StateMachine _sm;
 
@@ -25,10 +21,10 @@ public class WatcherController : MonoBehaviour
             head = GameObject.Find("Head").GetComponent<PlayerController>();
         if (!head)
             Debug.LogError("Unable to find Head at " + name);
-        _sm.AddState(new VillagerIdle("WatcherSleep",gameObject, _sm));
-        _sm.AddState(new VillagerAttack("WatcherWaking",gameObject, _sm));
-        _sm.AddState(new VillagerDeath("WatcherAwake",gameObject, _sm));
-        _sm.AddState(new VillagerDeath("WatcherDead",gameObject, _sm));
+        _sm.AddState(new WatcherSleep("WatcherSleep",gameObject, _sm));
+        _sm.AddState(new WatcherWaking("WatcherWaking",gameObject, _sm));
+        _sm.AddState(new WatcherAwake("WatcherAwake",gameObject, _sm));
+        _sm.AddState(new WatcherDead("WatcherDead",gameObject, _sm));
         if (!UIMan) Debug.LogError(gameObject.name + " does not have UIManager!");
         if (!_health)
             _health = GetComponent<HealthSystem>();
@@ -37,14 +33,18 @@ public class WatcherController : MonoBehaviour
             Debug.LogError(gameObject.name + "NO HEALTH SYSTEM");
             return;
         }
-        _health.setHealth(1); // 1 is for active and 0 is for inactive
+        _health.setHealth(1,false); // 1 is for active and 0 is for inactive
     }
 
     private void Update()
     {
         if (_sm.GetCurrentState() == "WatcherAwake")
         {
-            
+            if (head.isInAction)
+            {
+                head.gameObject.GetComponent<HealthSystem>().takeDamage(1,name);
+            }
         }
+        _sm.Update(Time.deltaTime);
     }
 }

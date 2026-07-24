@@ -1,4 +1,3 @@
-using JetBrains.Annotations;
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -46,15 +45,19 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private HealthSystem health;
 
+    public bool isInAction { get; private set; }
+
     private void Awake()
     {
         switch(tag)
         {
             case "Head":
                 _bp = BodyPart.Head;
+                health.setHealth(3, true);
                 break;
             case "Body":
                 _bp = BodyPart.Body;
+                health.setHealth(100, false);
                 break;
             default: break;
         }
@@ -65,16 +68,17 @@ public class PlayerController : MonoBehaviour
             Debug.LogWarning(gameObject + "'s HealthSystem not found");
             return;
         }
-        health.setHealth(100);
     }
 
     private void Start()
     {
         _transform = transform;
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.lockState = CursorLockMode.Locked;
 
         if (!camView)
             Debug.LogError("Camera Transform is not here!");
+
+        isInAction = false;
         //if (!SFXMan)
         //    SFXMan = GameObject.FindFirstObjectByType<SFXManager>().GetComponent<SFXManager>();
         //if (!SFXMan)
@@ -112,7 +116,7 @@ public class PlayerController : MonoBehaviour
     private void lookInput()
     {
         if (_bp == BodyPart.Head)
-        {
+        {   // errr figure out how to check for input
             rotation.y += Input.GetAxis("Mouse X") * sensitivity;
             rotation.x += -Input.GetAxis("Mouse Y") * sensitivity;
             rotation.x = Mathf.Clamp(rotation.x, -80f, 80f); // Limit vertical rotation
@@ -129,12 +133,18 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (Time.timeScale <= 0)
+            return;
+        isInAction = false;
+        lookInput();
+        moveInput();
         //if (_bp == BodyPart.Head)
-            InteractAction();
+        InteractAction();
         if (_bp == BodyPart.Head)
         {
             PickupAction();
             ThrowAction();
+            isInAction = (interact.GetIsBodyCam() || interact.GetIsMapCam());
         }
         else if (_bp == BodyPart.Body)
         {
@@ -156,6 +166,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("Interact Key Pressed");
             interact.Pickup();
+            isInAction = true;
         }
         isM1Held = Mouse.current.leftButton.isPressed;
     }
@@ -166,6 +177,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("Throw Key Pressed");
             interact.Throw();
+            isInAction = true;
         }
         isM2Held = Mouse.current.rightButton.isPressed;
     }
@@ -180,14 +192,9 @@ public class PlayerController : MonoBehaviour
         else if (Input.GetKeyUp(_controlSchema.Interact) && _bp == BodyPart.Head)
         {
             Debug.Log("Head Swap cam");
+            isInAction = true;
             interact.changeCam();
         }
-    }
-
-    private void FixedUpdate()
-    {
-        lookInput();
-        moveInput();
     }
 
     private void OnTriggerEnter(Collider collider)

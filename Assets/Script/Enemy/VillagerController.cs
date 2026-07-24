@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.ProBuilder.MeshOperations;
 
 public class VillagerController : MonoBehaviour
 {
@@ -31,7 +32,7 @@ public class VillagerController : MonoBehaviour
             Debug.LogError(gameObject.name + "NO HEALTH SYSTEM");
             return;
         }
-        _health.setHealth(1); // 1 is for active and 0 is for inactive
+        _health.setHealth(1,false); // 1 is for active and 0 is for inactive
     }
 
     private void Update()
@@ -72,6 +73,10 @@ public class VillagerController : MonoBehaviour
                 _sm.SetNextState("VillagerIdle");
                 UIMan.SetSubtitleText("You no longer sense an unfriendly presence chasing you.");
             }
+        }
+        else if (_sm.GetCurrentState() == "VillagerDeath")
+        {
+            gameObject.SetActive(false);
         }
         atkHB.enabled = (_sm.GetCurrentState() == "VillagerAttack");
         _sm.Update(Time.deltaTime);

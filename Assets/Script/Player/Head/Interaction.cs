@@ -10,6 +10,8 @@ public class Interaction : MonoBehaviour
     [SerializeField] private GameObject headCam, mapCam, bodyCam;
     private bool isMapCam, isBodyCam;
 
+    [SerializeField] private UIManager UIMan;
+
     private void Start()
     {
         if (!headCam)
@@ -24,6 +26,10 @@ public class Interaction : MonoBehaviour
             bodyCam = GameObject.Find("BodyCam");
         if (!bodyCam)
             Debug.LogError("Body Camera not found in " + name);
+        if (!UIMan)
+            UIMan = GameObject.FindFirstObjectByType<UIManager>();
+        if (!UIMan)
+            Debug.LogError("UI Manager not found in " + name);
         isMapCam = isBodyCam = false;
     }
 
@@ -32,16 +38,36 @@ public class Interaction : MonoBehaviour
     {
         if (!isMapCam && !isBodyCam)
         {
-            
+            isMapCam = true;
+            mapCam.SetActive(true);
+            headCam.SetActive(false);
+            UIMan.HideShowCrosshair(true, false);
         }
-        else if (!bodyCam)
+        else if (!isBodyCam)
         {
-
+            isBodyCam = true;
+            isMapCam = false;
+            bodyCam.SetActive(true);
+            mapCam.SetActive(false);
+            UIMan.HideShowCrosshair(true, false);
         }
         else 
-        { 
-        
+        {
+            isBodyCam = false;
+            headCam.SetActive(true);
+            bodyCam.SetActive(false);
+            UIMan.HideShowCrosshair(true, true);
         }
+    }
+
+    public bool GetIsMapCam()
+    {
+        return isMapCam;
+    }
+
+    public bool GetIsBodyCam()
+    {
+        return isBodyCam;
     }
 
     public bool Pickup()
@@ -67,7 +93,7 @@ public class Interaction : MonoBehaviour
     private void GrabObj(GameObject GO)
     {
         heldObj = GO;
-        heldObj.transform.position = transform.position;
+        heldObj.transform.position = transform.position + (transform.forward * 0.25f);
         isHolding = true;
     }
 
@@ -75,7 +101,7 @@ public class Interaction : MonoBehaviour
     {
         if (isHolding)
         {
-            heldObj.transform.position = transform.position;
+            heldObj.transform.position = transform.position + transform.forward * 0.25f;
         }
     }
 

@@ -54,7 +54,7 @@ public class AttackHB : MonoBehaviour
         //{
         //    other.GetComponent<HealthSystem>().takeDamage(dmg, owner);
         //}
-        if (other.gameObject == gameObject)
+        if (other.gameObject.tag == gameObject.tag)
             return;
         if (other.TryGetComponent<HealthSystem>(out HealthSystem tempHealth))
         {
