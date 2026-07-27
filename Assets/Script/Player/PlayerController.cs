@@ -45,6 +45,9 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private HealthSystem health;
 
+    [SerializeField] private GameObject debugMenu;
+    private bool debugMode = false;
+
     public bool isInAction { get; private set; }
 
     private void Awake()
@@ -149,6 +152,20 @@ public class PlayerController : MonoBehaviour
         else if (_bp == BodyPart.Body)
         {
             attackInput();
+        }
+
+        if (Input.GetKeyUp(KeyCode.BackQuote) && !debugMode)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            debugMenu.SetActive(true);
+            debugMode = true;
+            
+        }
+        else if (Input.GetKeyUp(KeyCode.BackQuote) && debugMode)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            debugMenu.SetActive(false);
+            debugMode = false;
         }
     }
 

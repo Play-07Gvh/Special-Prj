@@ -97,16 +97,23 @@ public class WatcherAwake : State
     private StateMachine _sm;
     private UIManager UIMan;
     private float _dur;
+
+    private SFXManager SFXMan;
+
     public WatcherAwake(string stateID, GameObject go, StateMachine sm) : base(stateID)
     {
         m_go = go;
         _healthSystem = m_go.GetComponent<HealthSystem>();
         _sm = sm;
         UIMan = GameObject.FindFirstObjectByType<UIManager>();
+        SFXMan = GameObject.FindFirstObjectByType<SFXManager>();
     }
 
     public override void Enter()
     {
+        // SFX
+        //SFXMan.PlaySFX("WatcherAwake", m_go.transform.position);
+
         _dur = 2;
         // Enable UI to warn player, maybe also have SFX?
         UIMan.WatcherWarningDisplay(1);

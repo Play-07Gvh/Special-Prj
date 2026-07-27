@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 [System.Serializable]
 public struct SFX
@@ -11,8 +13,8 @@ public struct SFX
 
 public class SFXManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] private List<SFX> _SFXList = new List<SFX>();
+
 
     void Start()
     {
@@ -21,7 +23,6 @@ public class SFXManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
     }
 
     public void PlaySFX(string audioName, Vector3 pos)
@@ -42,4 +43,5 @@ public class SFXManager : MonoBehaviour
         }
         Debug.LogError("AudioClip not found!");
     }
+
 }

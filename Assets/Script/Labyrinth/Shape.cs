@@ -45,8 +45,8 @@ public class Shape : MonoBehaviour
         //Debug.Log(name + " Collided with " + collision.gameObject.name);
         if (shp.ToString() == collision.gameObject.name)    
         {
-            ASP.insertPiece(shp);
             gameObject.SetActive(false);
+            ASP.insertPiece(shp);
         }
     }
 }

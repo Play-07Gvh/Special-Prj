@@ -7,6 +7,19 @@ public class HealthSystem : MonoBehaviour
 
     [SerializeField] private float ifDuration = 2;
     private float duration = 0;
+
+    [SerializeField] private VFXManager VFXMan;
+    [SerializeField] private SFXManager SFXMan;
+
+    private void Start()
+    {
+        if (!VFXMan) VFXMan = GameObject.FindFirstObjectByType<VFXManager>();
+        if (!VFXMan) Debug.LogError("VFX Manager not found in " + name);
+
+        if (!SFXMan) SFXMan = GameObject.FindFirstObjectByType<SFXManager>();
+        if (!SFXMan) Debug.LogError("SFX Manager not found in " + name);
+    }
+
     public void takeDamage(int dmg, string from)
     {
         // Give "IFrames" to prevent a lot of hits from happening at once.
@@ -30,14 +43,23 @@ public class HealthSystem : MonoBehaviour
             }
             if (gameObject.tag == "Body")
             {
+                VFXMan.hitVFX();
+                // SFXMan.PlaySFX("PlayerHit", gameObject.transform.position);
                 UIMan.SetSubtitleText("You've been hit by " + from);
                 UIMan.UpdateHealthText(health, false);
             }
             else if (gameObject.tag == "Head")
             {
+                VFXMan.hitVFX();
+                //SFXMan.PlaySFX("PlayerHit", gameObject.transform.position);
                 UIMan.UpdateHealthText(health, true);
             }
         }
+    }
+
+    public void testTakeDMG()
+    {
+        VFXMan.hitVFX();
     }
 
     public int getHealth()

@@ -183,6 +183,7 @@ public class ArrangeShapesPuzzle : Puzzle
         for (int i = 0; i <  shapes.Length; i++)
         {
             shapes[i].transform.position = locations[i].position;
+            shapes[i].GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
             // Set active for the shapes
             shapes[i].SetActive(true);
         }
@@ -213,6 +214,7 @@ public class ArrangeShapesPuzzle : Puzzle
         //Shuffle();
         // DO SOMETHING. GAME OVER? OR A STRIKE?
         RespawnShapes();
+        order = 0;
         Debug.Log("Failure.");
     }
 
