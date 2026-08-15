@@ -1,3 +1,4 @@
+using NUnit.Framework.Constraints;
 using UnityEngine;
 
 public class SpikeTrap : MonoBehaviour
@@ -6,6 +7,11 @@ public class SpikeTrap : MonoBehaviour
     [SerializeField] private GameObject target;
     [SerializeField] private HealthSystem _healthSystem;
     [SerializeField] private UIManager UIMan;
+
+    [SerializeField] private string _stateName;
+
+    [SerializeField] private GameObject _icon;
+    private bool isDisabled = false;
 
     private void Awake()
     {
@@ -26,21 +32,36 @@ public class SpikeTrap : MonoBehaviour
             Debug.LogError(gameObject.name + "NO HEALTH SYSTEM");
             return;
         }
+        if (!_icon) Debug.LogError("Icon is missing from " + name);
         _healthSystem.setHealth(1,false); // 1 is for active and 0 is for inactive
+        _stateName = "";
     }
 
     private void Update()
     {
+        _stateName = _sm.GetCurrentState();
         if (_sm.GetCurrentState() == "SpikeDeactivated")
-            return;
-
-        Vector3 direction = target.transform.position - transform.position;
-
-        if (Vector3.Distance(target.transform.position, transform.position) < 10 && _sm.GetCurrentState() != "SpikeActive")
         {
-            RaycastHit hit;
+            if (_icon.activeSelf) _icon.SetActive(false);
+            if (!isDisabled)
+            {
+                target.GetComponentInChildren<OutlineObjects>().HostileDown(gameObject);
+                isDisabled = true;
+            }
+            _sm.Update(Time.deltaTime);
+            return;
+        }
+        else isDisabled = false;
+            Vector3 direction = target.transform.position - transform.position;
 
-            if (Physics.Raycast(transform.position, direction, out hit))
+        if (Vector3.Distance(target.transform.position, transform.position) < 10)
+        {
+            if (!_icon.activeSelf) _icon.SetActive(true);
+            RaycastHit hit;
+            if (_sm.GetCurrentState() == "SpikeActive")
+            {
+            }
+            else if (Physics.Raycast(transform.position, direction, out hit, Mathf.Infinity, LayerMask.GetMask("Body")))
             {
                 if (hit.collider.gameObject == target)
                 {
@@ -54,10 +75,16 @@ public class SpikeTrap : MonoBehaviour
                 }
             }
         }
+        else
+        {
+            if (_icon.activeSelf) _icon.SetActive(false);
+        }
         _sm.Update(Time.deltaTime);
+        //_isActive = (_sm.GetCurrentState() == "SpikeActive");
+        //_icon.SetActive(_sm.GetCurrentState() == "SpikeActive");
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         if (_sm.GetCurrentState() == "SpikeDeactivated")
             return;

@@ -1,20 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public struct PuzzleShape
-{
-    public string Name;
-    public bool Active;
-    public Transform Position;
-    public PuzzleShape(string name, bool act, Transform pos)
-    {
-        Name = name;
-        Active = act;
-        Position = pos;
-    }
-}
-
-// TO:DO Make it so that if they mess up either game over or give a strike (3 strikes = gameover)
+// TO:DO Make it so that if they mess up either game over or give a strike (3 strikes = gameover) <- Nope not doing that
 // Add spawn doors for the body
 // remove spawn doors for the body when the head fits the shapes in order
 // Change to Phase 2 for the body to act upon
@@ -33,22 +20,19 @@ public struct PuzzleShape
 
 public class ArrangeShapesPuzzle : Puzzle
 {
-    //private bool triActive, sqrActive, cirActive;
-    //private List<PuzzleShape> shapeList = new() { new PuzzleShape("Triangle", false), new PuzzleShape("Square", false), new PuzzleShape("Circle", false)};
     [SerializeField] private string[] shapeList = { "Triangle", "Square", "Circle"};
     [SerializeField] private GameObject[] numbers = new GameObject[3];
     [SerializeField] private GameObject[] shapes = new GameObject[3];
     [SerializeField] private Transform[] locations = new Transform[3];
     [SerializeField] private GameObject[] icons = new GameObject[3];
+    [SerializeField] private Renderer[] wallShapeRender = new Renderer[3];
 
     [SerializeField] private LandmarkShape[] LandmarkArea = new LandmarkShape[3];
     private int[] landmarkOrder = new int[3] { 0, 1, 2 };
-    //private bool landmark1Interacted, landmark2Interacted, landmark3Interacted;
 
     private int landmarkCount = 0;
 
-    //[SerializeField] private side puzzleSide;
-    //[SerializeField] private ArrangeShapesPuzzle secondPart;
+    [SerializeField] private Material correctMat;
 
     int order = 0;
     int phase = 0;
@@ -105,7 +89,6 @@ public class ArrangeShapesPuzzle : Puzzle
         {
             phase++;
             Clear();
-            //RespawnShapes();
             // Hide the numbers
             HideOrShow(true);
             OpenDoor(0);
@@ -116,6 +99,10 @@ public class ArrangeShapesPuzzle : Puzzle
         {
             phase = -1;
             order = -1;
+            for (int i = 0; i < wallShapeRender.Length; i++)
+            {
+                wallShapeRender[i].material = correctMat;
+            }
             OpenDoor(2);
         }
     }
@@ -126,9 +113,7 @@ public class ArrangeShapesPuzzle : Puzzle
         {
             for (int i = 0; i < numbers.Length;i++)
             {
-                //icons[i].transform.position = numbers[i].transform.position;
                 numbers[i].SetActive(false);
-                //icons[i].SetActive(false);
                 icons[i].SetActive(true);
             }
         }
@@ -191,15 +176,6 @@ public class ArrangeShapesPuzzle : Puzzle
 
     public void insertPiece(shape shp)
     {
-        // if list is better
-        //if (shapeList[order].Name != shp.ToString())
-        //{
-        //    Fail();
-        //    return;
-        //}
-        //PuzzleShape tempShp = shapeList[order];
-        //tempShp.Active = true;
-
         if (shapeList[order] != shp.ToString())
         {
             Fail();
@@ -210,21 +186,12 @@ public class ArrangeShapesPuzzle : Puzzle
 
     public void Fail()
     {
-        //order = 0;
-        //Shuffle();
-        // DO SOMETHING. GAME OVER? OR A STRIKE?
         RespawnShapes();
         order = 0;
-        Debug.Log("Failure.");
     }
 
     public void Clear()
     {
-        //for (int i = 0;i < shapeList.Count;i++)
-        //{
-        //    PuzzleShape tempShape = shapeList[i];
-        //    tempShape.Active = false; //...?
-        //}
         order = 0;
         Shuffle();
     }
@@ -234,26 +201,5 @@ public class ArrangeShapesPuzzle : Puzzle
         ShowIcon(landmarkName);
         landmarkCount++;
     }
-    //public bool LandmarkInteractedWith(int no)
-    //{
-    //    switch (no)
-    //    {
-    //        case 1:
-    //            if (landmark1Interacted) return false;
-    //            landmark1Interacted = true;
-    //            break;
-    //        case 2:
-    //            if (landmark2Interacted) return false;
-    //            landmark2Interacted = true;
-    //            break;
-    //        case 3:
-    //            if (landmark3Interacted) return false;
-    //            landmark3Interacted = true;
-    //            break;
-    //    }
-
-    //    landmarkCount++;
-    //    return true;
-    //}
 
 }

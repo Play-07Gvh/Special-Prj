@@ -16,6 +16,8 @@ public class OutlineObjects : MonoBehaviour
 
     [SerializeField] private SFXManager SFXMan;
 
+    private float closestThreatDist = 0f;
+
     void Start()
     {
         foundObjs = new Dictionary<GameObject, float>();
@@ -36,13 +38,13 @@ public class OutlineObjects : MonoBehaviour
         {
             target.layer = 6;
             //foundObjs.Add(target, seenTimer);
-            //objs.Add(target);
+            objs.Add(target);
+            SFXMan.PlaySFX("Bump", transform.position);
         }
         // Uncomment when you done with the SFX finding
-        SFXMan.PlaySFX("Bump", transform.position);
     }
 
-    public void DisplayWarning(Vector3 target)
+    public float DisplayWarning(Vector3 target)
     {
         // THIS WORKS?
         float rot = transform.localEulerAngles.y;
@@ -70,6 +72,7 @@ public class OutlineObjects : MonoBehaviour
         }
         transform.localRotation = Quaternion.Euler(0, 0, 0);
         //Debug.Log("Enemy sensed at " + dir + " Degrees!");
+        return dist;
     }
 
     // NOTE: EVEN IF THE PLAYER IS MOVING, THEY WILL UNRENDER BY COUNTDOWN
@@ -97,19 +100,37 @@ public class OutlineObjects : MonoBehaviour
     public void Update()
     {
         UIMan.warningRemove();
+        closestThreatDist = 0f;
         for (int i = 0; i < warnObjs.Count; i++)
         {
-            DisplayWarning(warnObjs[i].transform.position);
+            float tempDist = DisplayWarning(warnObjs[i].transform.position);
+            if (tempDist > closestThreatDist)
+            {
+                closestThreatDist = tempDist;
+            }
         }
         if (warnObjs.Count > 0)
         {
             // Warning, this may constantly tick, add a check for when it is playing.
-            //SFXMan.PlaySFX("Heartbeat", transform.position);
+            SFXMan.toggleHeartBeat(true, closestThreatDist);
         }
+        else
+        {
+            SFXMan.toggleHeartBeat(false, closestThreatDist);
+        }
+    }
+
+    // I need this because when the villager dies, it does not trigger "OnTriggerExit"
+    public void HostileDown(GameObject target)
+    {
+        if (!warnObjs.Contains(target)) return;
+        warnObjs.Remove(target);
     }
 
     public void OnTriggerEnter(Collider other)
     {
+        if (warnObjs.Contains(other.gameObject))
+            return;
         warnObjs.Add(other.gameObject);
         //DisplayWarning(other.gameObject);
         //Debug.Log(other.gameObject.name + " sensed");
@@ -117,7 +138,9 @@ public class OutlineObjects : MonoBehaviour
 
     public void OnTriggerExit(Collider other)
     {
+        if (!warnObjs.Contains(other.gameObject))
+            return;
         warnObjs.Remove(other.gameObject);
-        Debug.Log("Lost " + other.gameObject.name);
+        //Debug.Log("Lost " + other.gameObject.name);
     }
 }

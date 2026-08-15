@@ -70,6 +70,11 @@ public class Interaction : MonoBehaviour
         return isBodyCam;
     }
 
+    public bool GetIsHolding()
+    {
+        return isHolding;
+    }
+
     public bool Pickup()
     {
         if (isHolding)
@@ -84,9 +89,9 @@ public class Interaction : MonoBehaviour
         {
             Debug.Log("Shape HIT!");
             GrabObj(hitInfo.collider.gameObject);
+            UIMan.ToggleHeadInteractUI(2);
             return true;
         }
-        Debug.DrawRay(transform.position, transform.forward);
         return false;
     }
 
@@ -103,6 +108,14 @@ public class Interaction : MonoBehaviour
         {
             heldObj.transform.position = transform.position + transform.forward * 0.25f;
         }
+        else if (Physics.Raycast(transform.position,transform.forward, 10f, LayerMask.GetMask("Shape")))
+        {
+            UIMan.ToggleHeadInteractUI(1);
+        }
+        else
+        {
+            UIMan.ToggleHeadInteractUI(0);
+        }
     }
 
     public bool Throw()
@@ -117,6 +130,7 @@ public class Interaction : MonoBehaviour
         heldRigid.angularVelocity = Vector3.zero;
         heldRigid.AddForce(force,ForceMode.Impulse);
         isHolding = false;
+        UIMan.ToggleHeadInteractUI(0);
         return true;
     }
 }

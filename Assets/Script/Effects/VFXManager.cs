@@ -43,17 +43,21 @@ public class VFXManager : MonoBehaviour
         }
     }
 
-    public bool playVFX(string name, Vector3 pos)
+    public GameObject playVFX(string name, Vector3 pos, Quaternion rot)
     {
         for (int i = 0; i < VFXList.Count; i++)
         {
             if (VFXList[i].name == name)
             {
-                Instantiate(VFXList[i].VFXPrefab, pos, new Quaternion());
-                return true;
+                return Instantiate(VFXList[i].VFXPrefab, pos, rot);
             }
         }
-        return false;
+        return null;
+    }
+
+    public void stopVFX(GameObject target)
+    {
+        Destroy(target);
     }
 
     public void hitVFX()

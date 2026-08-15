@@ -11,7 +11,7 @@ public class Tutorial : MonoBehaviour
 
     void Start()
     {
-        Time.timeScale = 0.0f;
+        //startTutorial();
     }
 
     // Update is called once per frame
@@ -20,10 +20,15 @@ public class Tutorial : MonoBehaviour
         
     }
 
+    public void startTutorial()
+    {
+        Time.timeScale = 0.0f;
+        tutorialPanel.SetActive(true);
+    }
+
     public void finishedTutorial()
     {
         Time.timeScale = 1.0f;
         tutorialPanel.SetActive(false);
-        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
     }
 }

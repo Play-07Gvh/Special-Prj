@@ -97,7 +97,7 @@ public class SpikeDeactivated : State
     public override void Enter()
     {
         m_go.GetComponent<BoxCollider>().enabled = false;
-        UIMan.SetSubtitleText("You have disarmed a Spike Trap");
+        //UIMan.SetSubtitleText("You have disarmed a Spike Trap");
     }
 
     public override void Update(double dt)

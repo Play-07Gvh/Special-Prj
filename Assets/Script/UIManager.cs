@@ -39,6 +39,13 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject[] watcherWarningDisplay = new GameObject[2];
     [SerializeField] private TMP_Text headHPTxt;
 
+    [SerializeField] private GameObject pickUpUI;
+    [SerializeField] private GameObject throwUI;
+
+    [SerializeField] private SFXManager SFXMan;
+
+    [SerializeField] private GameObject pauseUI;
+
     private void Start()
     {
         if (!healthText) Debug.LogError("No health text!");
@@ -52,6 +59,11 @@ public class UIManager : MonoBehaviour
 
         if (!headCrosshair) Debug.LogWarning("Head Crosshair missing");
         if (!bodyCrosshair) Debug.LogWarning("Body Crosshair missing");
+
+        if (!pickUpUI) Debug.LogError("No PickUp UI");
+        if (!throwUI) Debug.LogError("No Throw UI");
+
+        if (!SFXMan) Debug.LogError("No SFXMan in " + name);
     }
 
     public void HideOrShowInteract(bool HoS)
@@ -93,6 +105,7 @@ public class UIManager : MonoBehaviour
         if (distance <= 1)
         {
             winPanel.SetActive(true);
+            SFXMan.PlayWinBGM();
             Time.timeScale = 0;
         }
         distanceText.text = "Distance from Head: " + distance;
@@ -101,6 +114,8 @@ public class UIManager : MonoBehaviour
     public void lose()
     {
         losePanel.SetActive(true);
+        SFXMan.PlayLoseBGM();
+        Cursor.lockState = CursorLockMode.None;
         Time.timeScale = 0;
     }
 
@@ -136,6 +151,24 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void ToggleHeadInteractUI(int i)
+    {
+        switch(i)
+        {
+            case 0:
+                pickUpUI.SetActive(false);
+                throwUI.SetActive(false);
+                break;
+            case 1:
+                pickUpUI.SetActive(true);
+                throwUI.SetActive(false);
+                break;
+            case 2:
+                pickUpUI.SetActive(false);
+                throwUI.SetActive(true);
+                break;
+        }
+    }
 
     public void WatcherWarningDisplay(int warningState)
     {
@@ -161,6 +194,21 @@ public class UIManager : MonoBehaviour
         img_ewarn.canvasRenderer.SetAlpha(0);
         img_swarn.canvasRenderer.SetAlpha(0);
         img_wwarn.canvasRenderer.SetAlpha(0);
+    }
+
+
+    public void PauseGame()
+    {
+        Time.timeScale = 0;
+        Cursor.lockState = CursorLockMode.None;
+        pauseUI.SetActive(true);
+    }
+
+    public void ResumeGame()
+    {
+        Time.timeScale = 1f;
+        Cursor.lockState = CursorLockMode.Locked;
+        pauseUI.SetActive(false);
     }
 
     private void FixedUpdate()

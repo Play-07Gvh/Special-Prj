@@ -45,14 +45,19 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private HealthSystem health;
 
-    [SerializeField] private GameObject debugMenu;
-    private bool debugMode = false;
+    //[SerializeField] private GameObject debugMenu;
+    //private bool debugMode = false;
+
+    [SerializeField] private Animator _animator;
+    private bool isAttackKeyHeld = false;
+
+    [SerializeField] private UIManager UIMan;
 
     public bool isInAction { get; private set; }
 
     private void Awake()
     {
-        switch(tag)
+        switch (tag)
         {
             case "Head":
                 _bp = BodyPart.Head;
@@ -76,16 +81,12 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         _transform = transform;
-        //Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.Locked;
 
         if (!camView)
             Debug.LogError("Camera Transform is not here!");
 
         isInAction = false;
-        //if (!SFXMan)
-        //    SFXMan = GameObject.FindFirstObjectByType<SFXManager>().GetComponent<SFXManager>();
-        //if (!SFXMan)
-        //    Debug.LogError("SFXManager for Player is not found!");
     }
 
     private void moveInput()
@@ -109,9 +110,9 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.BackQuote))
             _isNoClip = !_isNoClip;
 
-        // Do not detect anything if not moving
-        //_detection.enabled = !(_horInput == 0 && _verInput == 0);
-
+        if (_bp == BodyPart.Head && !isInAction) isInAction = (_verInput != 0 || _horInput != 0);
+        else if (_bp == BodyPart.Body) _animator.SetBool("isMoving", (_verInput != 0 || _horInput != 0));
+        
         _finalMove = _horInput * _transform.right + _verInput * _transform.forward;
         _move.Move(_finalMove, _isNoClip);
     }
@@ -120,10 +121,13 @@ public class PlayerController : MonoBehaviour
     {
         if (_bp == BodyPart.Head)
         {   // errr figure out how to check for input
+
             rotation.y += Input.GetAxis("Mouse X") * sensitivity;
             rotation.x += -Input.GetAxis("Mouse Y") * sensitivity;
             rotation.x = Mathf.Clamp(rotation.x, -80f, 80f); // Limit vertical rotation
             transform.eulerAngles = new Vector3(rotation.x, rotation.y, 0);
+            isInAction = (Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0);
+            //Debug.Log("Mouse X " + Input.GetAxis("Mouse X") + " ,Mouse Y " + Input.GetAxis("Mouse Y"));
             //camView.localEulerAngles = new Vector3(rotation.x, 0, 0);
         }
         else if (_bp == BodyPart.Body)
@@ -136,45 +140,43 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (_bp == BodyPart.Body && Input.GetKeyUp(KeyCode.Escape) && Time.timeScale > 0f)
+        {
+            UIMan.PauseGame();
+        }
+        else if (_bp == BodyPart.Body && Input.GetKeyUp(KeyCode.Escape) && Time.timeScale <= 0f)
+        {
+            UIMan.ResumeGame();
+        }
+
         if (Time.timeScale <= 0)
             return;
         isInAction = false;
+        // Wasn't sure if FixedUpdate is part of it so I just shoved everything here to check if inputs were pressed for the inAction.
         lookInput();
         moveInput();
-        //if (_bp == BodyPart.Head)
         InteractAction();
         if (_bp == BodyPart.Head)
         {
             PickupAction();
             ThrowAction();
-            isInAction = (interact.GetIsBodyCam() || interact.GetIsMapCam());
+            if (!isInAction) isInAction = (interact.GetIsBodyCam() || interact.GetIsMapCam() || interact.GetIsHolding());
         }
         else if (_bp == BodyPart.Body)
         {
             attackInput();
         }
-
-        if (Input.GetKeyUp(KeyCode.BackQuote) && !debugMode)
-        {
-            Cursor.lockState = CursorLockMode.None;
-            debugMenu.SetActive(true);
-            debugMode = true;
-            
-        }
-        else if (Input.GetKeyUp(KeyCode.BackQuote) && debugMode)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            debugMenu.SetActive(false);
-            debugMode = false;
-        }
     }
 
     private void attackInput()
     {
-        if (Input.GetKey(_controlSchema.Attack))
+        
+        if (Input.GetKey(_controlSchema.Attack) && !isAttackKeyHeld)
         {
-            atkHB.enableAttack(true);
+            //atkHB.EnableAttack();
+            _animator.SetTrigger("isAttack");
         }
+        isAttackKeyHeld = Input.GetKey(_controlSchema.Attack);
     }
 
     private void PickupAction()
@@ -220,19 +222,5 @@ public class PlayerController : MonoBehaviour
             return;
         if (_outObj != null)
             _outObj.RenderOject(collider.gameObject);
-        //SFXMan.PlaySFX("Bump", transform.position + collider.ClosestPoint(transform.position));
     }
-
-    //private void OnTriggerStay(Collider collider)
-    //{
-    //    if (_outObj != null)
-    //        _outObj.RenderOject(collider.gameObject);
-    //}
-
-    // Debating on making it so that when it leaves the presence, it removes render.
-    //private void OnTriggerExit(Collider collider)
-    //{
-    //    if (_outObj != null)
-    //        _outObj.RenderOject(collider.gameObject);
-    //}
 }

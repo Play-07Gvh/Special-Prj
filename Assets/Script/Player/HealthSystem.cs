@@ -28,6 +28,7 @@ public class HealthSystem : MonoBehaviour
             health -= dmg;
             duration = ifDuration;
         }
+        else return;
 
         if (!UIMan)
         {
@@ -67,7 +68,7 @@ public class HealthSystem : MonoBehaviour
         return health;
     }
 
-    public void setHealth(int val, bool BoH)
+    public void setHealth(int val, bool BoH = false)
     {
         health = val;
         if (!UIMan)

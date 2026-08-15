@@ -8,21 +8,23 @@ public class WatcherSleep : State
     private StateMachine _sm;
     private UIManager UIMan;
     private float _sleepTime = 15;
+    private Animator _animator;
     public WatcherSleep(string stateID, GameObject go, StateMachine sm) : base(stateID)
     {
         m_go = go;
         _healthSystem = m_go.GetComponent<HealthSystem>();
         UIMan = GameObject.FindFirstObjectByType<UIManager>();
         _sm = sm;
+        _animator = m_go.GetComponent<Animator>();
     }
 
     public override void Enter()
     {
-        Debug.Log("Entering Watcher Sleeping");
         _sleepTime = 2;
         _sleepTime = Random.Range(10, 30);
         UIMan.WatcherWarningDisplay(-1);
-        m_go.transform.eulerAngles = new Vector3(0, 90, 0);
+        _animator.SetTrigger("isSleeping");
+        //m_go.transform.eulerAngles = new Vector3(0, 90, 0);
     }
 
     public override void Update(double dt)
@@ -52,6 +54,7 @@ public class WatcherWaking : State
     private StateMachine _sm;
     private UIManager UIMan;
     private float _dur;
+    private Animator _animator;
 
     public WatcherWaking(string stateID, GameObject go, StateMachine sm) : base(stateID)
     {
@@ -59,15 +62,16 @@ public class WatcherWaking : State
         _healthSystem = m_go.GetComponent<HealthSystem>();
         _sm = sm;
         UIMan = GameObject.FindFirstObjectByType<UIManager>();
+        _animator = m_go.GetComponent<Animator>();
     }
 
     public override void Enter()
     {
         _dur = 3;
         // DO UI STUFF HERE
-        Debug.Log("Watcher Waking Up");
         UIMan.WatcherWarningDisplay(0);
-        m_go.transform.eulerAngles = new Vector3(0, 180, 0);
+        //m_go.transform.eulerAngles = new Vector3(0, 180, 0);
+        _animator.SetTrigger("isWaking");
     }
 
     public override void Update(double dt)
@@ -100,6 +104,8 @@ public class WatcherAwake : State
 
     private SFXManager SFXMan;
 
+    private Animator _animator;
+
     public WatcherAwake(string stateID, GameObject go, StateMachine sm) : base(stateID)
     {
         m_go = go;
@@ -107,6 +113,7 @@ public class WatcherAwake : State
         _sm = sm;
         UIMan = GameObject.FindFirstObjectByType<UIManager>();
         SFXMan = GameObject.FindFirstObjectByType<SFXManager>();
+        _animator = m_go.GetComponent<Animator>();
     }
 
     public override void Enter()
@@ -117,8 +124,8 @@ public class WatcherAwake : State
         _dur = 2;
         // Enable UI to warn player, maybe also have SFX?
         UIMan.WatcherWarningDisplay(1);
-        m_go.transform.eulerAngles = new Vector3(0, 270, 0);
-        Debug.Log("Watcher Woke Up");
+        //m_go.transform.eulerAngles = new Vector3(0, 270, 0);
+        _animator.SetTrigger("isAwake");
     }
 
     public override void Update(double dt)

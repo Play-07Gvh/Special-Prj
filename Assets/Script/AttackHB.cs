@@ -11,39 +11,35 @@ public class AttackHB : MonoBehaviour
 
     private void Start()
     {
-        //disableAttack();
-        if (owner == "") owner = name;
+        DisableAttack();
+        if (owner == "") owner = gameObject.GetComponentInParent<GameObject>().name;
     }
 
-    public void enableAttack(bool isDur = false)
+    //public void enableAttack(bool isDur = false)
+    //{
+    //    gameObject.SetActive(true);
+    //    //ifDur = isDur;
+    //    //if (!ifDur)
+    //    //    return;
+    //    //cd = dur;
+    //}
+
+    public void EnableAttack()
     {
         gameObject.SetActive(true);
-        ifDur = isDur;
-        if (!ifDur)
-            return;
-        cd = dur;
     }
 
-    public void disableAttack()
+    public void DisableAttack()
     {
         gameObject.SetActive(false);
     }
 
+
     private void FixedUpdate()
     {
-        if (!ifDur)
-            return;
-        if (cd > 0f)
-        {
-            cd -= Time.deltaTime;
-        }
-        else if (cd <= 0f)
-        {
-            disableAttack();
-        }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         //if (other.tag == "Body" && owner != "Body")
         //{
